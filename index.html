@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="mr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1455a0">
+  <title>Morya Balrugnaly | Hospital App</title>
+  <style>
+    :root{--blue:#1455a0;--ink:#17324f;--muted:#64748b;--bg:#f3f7fc;--line:#dce6f2}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font:15px system-ui,Arial,sans-serif;color:var(--ink)}
+    header{background:var(--blue);color:white;padding:18px 16px}header h1{font-size:21px;margin:0 0 4px}header p{margin:0;font-size:13px}
+    main{max-width:1100px;margin:auto;padding:16px}.panel,.tile{background:white;border:1px solid var(--line);border-radius:14px}
+    .panel{padding:16px;margin-bottom:14px}.muted{color:var(--muted);font-size:13px;line-height:1.5}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .tile{padding:14px;text-align:left;min-height:88px;color:var(--ink);font-weight:650}
+    .tile small{display:block;color:var(--muted);font-weight:400;margin-top:6px}
+    button{border:0;border-radius:9px;padding:11px 14px;background:var(--blue);color:white;font-weight:600}
+    button.secondary{background:#e8f0fa;color:var(--blue)}button:disabled{opacity:.5}
+    input,select,textarea{width:100%;padding:11px;border:1px solid #cbd8e8;border-radius:9px;margin:6px 0 12px;background:white;font:inherit}
+    label{font-size:13px;font-weight:650}.hidden{display:none!important}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .section-title{margin:4px 0 12px;font-size:19px}.navback{margin-bottom:12px}
+    .notice{border-left:4px solid #d49b22;background:#fff8e8;padding:10px 12px;border-radius:8px}
+    .status{font-size:13px;color:var(--muted);margin-top:8px}.role{display:inline-block;background:#e8f0fa;color:var(--blue);border-radius:30px;padding:4px 9px;font-size:12px}
+    footer{text-align:center;padding:22px;color:var(--muted);font-size:12px}
+    @media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>🏥 Morya Balrugnaly</h1>
+  <p>बालरुग्णालय • जामखेड</p>
+  <p>आपल्या आरोग्याची काळजी, आमची जबाबदारी</p>
+</header>
+<main>
+  <section class="panel" id="welcome">
+    <h2 style="margin:0 0 6px">Hospital Management</h2>
+    <p class="muted">ही सुरक्षित प्रणालीची प्रारंभिक स्क्रीन आहे. Supabase जोडणी आणि access policies तपासल्याशिवाय रुग्णांची खरी माहिती वापरू नका.</p>
+    <div class="row"><span class="role" id="roleLabel">Login आवश्यक</span><span class="status" id="authStatus">सध्या Demo / Offline स्क्रीन</span></div>
+  </section>
+
+  <section class="panel" id="loginPanel">
+    <h3 class="section-title">Staff Login</h3>
+    <label for="email">ईमेल</label><input id="email" type="email" autocomplete="username" placeholder="staff@hospital.in">
+    <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password">
+    <div class="row"><button id="loginBtn" type="button">Login</button><button class="secondary" id="logoutBtn" type="button" disabled>Logout</button></div>
+    <p class="muted">Login सध्या backend config जोडल्यावरच कार्यरत होईल. कोणताही password या फाईलमध्ये ठेवलेला नाही.</p>
+    <p id="loginMessage" class="status" role="status"></p>
+  </section>
+
+  <section class="panel">
+    <h3 class="section-title">विभाग</h3>
+    <div class="grid" id="menu">
+      <button class="tile" data-page="patients">👶 Patient Records<small>रुग्ण नोंदणी व इतिहास</small></button>
+      <button class="tile" data-page="opd">🩺 OPD<small>तपासणी व निदान</small></button>
+      <button class="tile" data-page="ipd">🛏️ IPD<small>Admission व discharge</small></button>
+      <button class="tile" data-page="medicines">💊 Medicines & Dose<small>Doctor-approved prescription</small></button>
+      <button class="tile" data-page="bills">🧾 Bills & Payments<small>बिले व बाकी रक्कम</small></button>
+      <button class="tile" data-page="appointments">📅 Appointments<small>भेटी व वेळापत्रक</small></button>
+      <button class="tile" data-page="reports">🧪 Lab & Documents<small>Reports व कागदपत्रे</small></button>
+      <button class="tile" data-page="followups">🔔 Follow-ups<small>पुढील भेटी</small></button>
+      <button class="tile" data-page="staff">👨‍⚕️ Staff & Roles<small>डॉक्टर व कर्मचारी</small></button>
+      <button class="tile" data-page="medical-store">🏪 Medical Store Link<small>भविष्यातील software जोडणी</small></button>
+      <button class="tile" data-page="messages">💬 Messages<small>सूचना व reminders</small></button>
+      <button class="tile" data-page="settings">⚙️ Settings<small>भाषा व हॉस्पिटल सेटिंग्ज</small></button>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="pagePanel">
+    <button class="secondary navback" id="backBtn">← मुख्य पान</button>
+    <h2 class="section-title" id="pageTitle"></h2>
+    <div id="pageContent"></div>
+  </section>
+
+  <section class="panel notice">
+    <strong>सुरक्षा सूचना</strong>
+    <p class="muted">औषधाचा dose अॅपने स्वतः ठरवू नये. वजन, वय, औषधाची concentration, निदान, allergy व इतर बाबी डॉक्टरांनी तपासून dose मंजूर करावा. ही स्क्रीन वैद्यकीय सल्ला देत नाही.</p>
+  </section>
+</main>
+<footer>Morya Balrugnaly • Jamkhed, Maharashtra</footer>
+<script>
+const pages = {
+  patients:["👶 Patient Records","Patient ID / मोबाईलद्वारे रुग्ण शोध, कुटुंबातील सदस्यांचे स्वतंत्र रेकॉर्ड, OPD/IPD इतिहास, औषधे, reports, bills आणि discharge summary."],
+  opd:["🩺 OPD","OPD भेट, तपासणी, डॉक्टर, निदान आणि मंजूर prescription."],
+  ipd:["🛏️ IPD","Admission, ward/bed, treatment notes, discharge आणि discharge summary."],
+  medicines:["💊 Medicines & Dose","औषध catalogue, strength/concentration, allergy check, dose, route, frequency, duration आणि मुख्य डॉक्टरांची मंजुरी. Dose डॉक्टरांनीच ठरवावा."],
+  bills:["🧾 Bills & Payments","OPD/IPD/Medicine/Lab bills, paid/pending status, payment history आणि receipts."],
+  appointments:["📅 Appointments","Appointment booking, doctor schedule, availability आणि cancellation."],
+  reports:["🧪 Lab & Documents","Lab reports, prescriptions, discharge summaries आणि patient documents."],
+  followups:["🔔 Follow-ups","Follow-up date, reminder schedule आणि reminder delivery log."],
+  staff:["👨‍⚕️ Staff & Roles","मुख्य डॉक्टर: सर्व नियंत्रण. डॉक्टर: परवानगीप्रमाणे रुग्ण. नर्स: आवश्यक clinical माहिती. Reception: registration/appointments. Medical staff: फक्त pharmacy-संबंधित मर्यादित माहिती."],
+  "medical-store":["🏪 Medical Store Integration","मेडिकलच्या सध्याच्या billing software मध्ये API, integration किंवा CSV/Excel export आहे का हे तपासूनच जोडणी करता येईल. इतर ग्राहकांची माहिती आयात होणार नाही."],
+  messages:["💬 Messages","Patient-consented SMS/WhatsApp/app notifications, pending bill reminders, hospital notices आणि festival greetings. बाह्य SMS/WhatsApp सेवांना खर्च लागू शकतो."],
+  settings:["⚙️ Settings","मराठी / हिंदी / English, hospital profile, backup आणि security settings."]
+};
+function openPage(key){const p=pages[key];if(!p)return;document.getElementById("pageTitle").textContent=p[0];document.getElementById("pageContent").innerHTML="<p>"+p[1]+"</p><p class='muted'>हा विभाग backend व परवानग्या जोडल्यावर कार्यरत होईल.</p>";document.getElementById("pagePanel").classList.remove("hidden");document.getElementById("pagePanel").scrollIntoView({behavior:"smooth"});}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>openPage(b.dataset.page)));
+document.getElementById("backBtn").addEventListener("click",()=>document.getElementById("pagePanel").classList.add("hidden"));
+document.getElementById("loginBtn").addEventListener("click",()=>{document.getElementById("loginMessage").textContent="Backend configuration जोडल्यावर Login सुरू होईल. हा demo login नाही.";});
+document.getElementById("logoutBtn").addEventListener("click",()=>{});
+</script>
+</body>
+</html>
